@@ -40,8 +40,10 @@ Best Practices:
 - Always ask for a supplier email if none is provided
 - Always ask for a supplier phone if none is provided
 - Always ask for a supplier address if none is provided
-- Create a new supplier with the following fields: [firstName, lastName, companyName, contactNumber, contactEmail, supplierCategoryId, countryId, countryName, businessLicenseNumber, SupplierBankAccountDetail]
+- Create a new supplier with the following fields: [firstName, lastName, companyName, contactNumber, contactEmail, supplierCategoryId, countryId, countryName, SupplierLegalInformation, SupplierBankAccountDetail]
 - when provide required fields, then you hit the postSupplierTool
+- if ask no need to information details, then you hit the postSupplierTool
+
 
 // Create a new carrier
 - Always ask for a carrier name if none is provided
