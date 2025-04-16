@@ -3,7 +3,7 @@ import { Agent } from "@mastra/core/agent";
 import { Step, Workflow } from "@mastra/core/workflows";
 import { z } from "zod";
 
-const llm = google("gemini-1.5-pro-latest");
+const llm = google("gemini-2.0-flash");
 
 const agent = new Agent({
   name: "Weather Agent",
@@ -182,15 +182,120 @@ const weatherWorkflow = new Workflow({
 
 weatherWorkflow.commit();
 
-// const weatherForecastWorkflow = new Workflow({
-//   name: "weather-forecast-workflow",
-//   triggerSchema: z.object({
-//     city: z.string().describe("The city to get the weather forecast for"),
-//   }),
-// })
-//   .step(fetchWeather)
-//   .then(planActivities);
+// Define the employee schemas
+const employeeSchema = z.object({
+  id: z.number(),
+  firstName: z.string(),
+  lastName: z.string(),
+  avatarUrl: z.string().nullable(),
+  about: z.string().nullable(),
+  badgeId: z.string().nullable(),
+  department: z
+    .object({
+      id: z.number(),
+      departmentName: z.string(),
+    })
+    .nullable(),
+  phone: z.string().nullable(),
+  emergencyPhone: z.string().nullable(),
+  email: z.string().nullable(),
+  jobPosition: z
+    .object({
+      id: z.number(),
+      jobPositionName: z.string(),
+      description: z.string(),
+      createdDate: z.string(),
+      updatedDate: z.string(),
+    })
+    .nullable(),
+  country: z.string().nullable(),
+  manager: z
+    .object({
+      id: z.number(),
+      firstName: z.string(),
+      lastName: z.string(),
+      avatar: z.string().nullable(),
+    })
+    .nullable(),
+  coach: z
+    .object({
+      id: z.number(),
+      firstName: z.string(),
+      lastName: z.string(),
+      avatar: z.string().nullable(),
+    })
+    .nullable(),
+  resumes: z.array(z.unknown()),
+  workInformation: z.unknown().nullable(),
+  privateInformation: z.unknown().nullable(),
+});
 
-// weatherForecastWorkflow.commit();
+const employeeResponseSchema = z.object({
+  pageIndex: z.number(),
+  pageSize: z.number(),
+  count: z.number(),
+  data: z.array(employeeSchema),
+});
 
-export { weatherWorkflow };
+// Create a step to fetch all employees
+const fetchEmployees = new Step({
+  id: "fetch-employees",
+  description: "Fetches all employees from the API",
+  inputSchema: z.object({
+    pageIndex: z.number().optional().describe("Page number (starts from 1)"),
+    pageSize: z.number().optional().describe("Number of items per page"),
+  }),
+  outputSchema: employeeResponseSchema,
+  execute: async ({ context }) => {
+    const triggerData = context?.getStepResult<{
+      pageIndex?: number;
+      pageSize?: number;
+    }>("trigger");
+
+    const pageIndex = triggerData?.pageIndex || 1;
+    const pageSize = triggerData?.pageSize || 10;
+
+    try {
+      const url = `https://esapdev.xyz:7002/api/employee/get-all-employee?pageIndex=${pageIndex}&pageSize=${pageSize}`;
+
+      console.log(`Fetching employees from: ${url}`);
+
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkYmY3NmI4Zi1iYTgyLTQ4ZDQtYjkyOC1kNzY3MWZkZTExZDciLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoieWFzaXJhcmFmYXQ4ODU2QGdtYWlsLmNvbSIsImp0aSI6ImVjODI1MTI2LTc4M2QtNGM0My1iYmIwLWI0MzBiZWRmN2E3OCIsImVtYWlsIjoieWFzaXJhcmFmYXQ4ODU2QGdtYWlsLmNvbSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6WyJVc2VyIE1hbmFnZW1lbnQgQWRtaW4iLCJTdXBlciBBZG1pbiJdLCJQZXJtaXNzaW9uIjpbIkFsbCIsIkNSTSBBZG1pbiIsIkNSTSBFeGVjdXRpdmUiLCJDUk0gTWFuYWdlciIsIkZNUyBBZG1pbiIsIkZNUyBFeGVjdXRpdmUiLCJGTVMgTWFuYWdlciIsIkhSIEFkbWluIiwiSFIgRXhlY3V0aXZlIiwiSFIgTWFuYWdlciIsIlNDTSBBZG1pbiIsIlNDTSBFeGVjdXRpdmUiLCJTQ00gTWFuYWdlciIsIlVzZXIgTWFuYWdlbWVudCBBZG1pbiIsIlVzZXIgTWFuYWdlbWVudCBFeGVjdXRpdmUiLCJVc2VyIE1hbmFnZW1lbnQgTWFuYWdlciJdLCJleHAiOjE3NDczNDYxNjcsImlzcyI6IkVTQVAiLCJhdWQiOiJFU0FQX0NsaWVudCJ9.RmkPufhZuTD43FN90qJTD-8lQGUcOt4gh5DIVrgFrAg`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        console.error(`Error fetching employees: ${response.statusText}`);
+        throw new Error(`Failed to fetch employees: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      console.log(`Successfully fetched ${data.data.length} employees`);
+      return data;
+    } catch (error) {
+      console.error("Error in fetchEmployees:", error);
+      throw error;
+    }
+  },
+});
+
+// Create the employee workflow
+const employeeWorkflow = new Workflow({
+  name: "employee-workflow",
+  triggerSchema: z.object({
+    pageIndex: z.number().optional().describe("Page number (starts from 1)"),
+    pageSize: z.number().optional().describe("Number of items per page"),
+  }),
+})
+  .step(fetchEmployees)
+  .then(planActivities);
+
+// Make sure to commit the workflow before exporting it
+employeeWorkflow.commit();
+
+// Export the committed workflows
+export { weatherWorkflow, employeeWorkflow };
