@@ -1,0 +1,57 @@
+import { z } from "zod";
+
+// Define a custom file type schema
+const FileSchema = z.object({
+  name: z.string().optional(),
+  type: z.string().optional(),
+  size: z.number().optional(),
+});
+
+export const SupplierSchema = z.object({
+  firstName: z.string(),
+  middleName: z.string().optional(),
+  lastName: z.string(),
+  companyName: z.string(),
+  companyWebsite: z.string().optional(),
+  companyAddress: z.string().optional(),
+  street: z.string().optional(),
+  city: z.string().optional(),
+  state: z.string().optional(),
+  zipCode: z.string().optional(),
+  contactNumber: z.string(),
+  contactEmail: z.string(),
+  supplierCategoryId: z.number(),
+  countryId: z.number(),
+  countryName: z.string().optional(),
+  supplierStatus: z.string().optional(),
+  avatarFile: FileSchema.optional(),
+  SupplierLegalInformation: z.object({
+    businessLicenseNumber: z.string(),
+    taxIdentificationNumber: z.string().optional(),
+    ksaTaxClassification: z.string().optional(),
+    vatRegistrationNumber: z.string().optional(),
+    zakatCertificateFile: FileSchema.optional(),
+    complianceCertificationFile: FileSchema.optional(),
+    insuranceCertificateFile: FileSchema.optional(),
+    antiCorruptionCompliance: z.boolean().optional(),
+    ethicalSourcingAgreement: z.boolean().optional(),
+    supplierCodeOfConductAgreement: z.boolean().optional(),
+    legalRepresentativeDetails: z.string().optional(),
+    commercialRegistration: z.string().optional(),
+    dunsNumber: z.string().optional(),
+  }),
+  SupplierBankAccountDetail: z.object({
+    bankName: z.string(),
+    branchName: z.string(),
+    accountHolderName: z.string(),
+    accountNumber: z.string(),
+    address: z.string().optional(),
+    routingNumber: z.string(),
+    accountVerificationFile: FileSchema.optional(),
+    paymentTermsId: z.number().optional(),
+    countryId: z.number(),
+    countryName: z.string().optional(),
+    currencyId: z.number(),
+    currencyName: z.string().optional(),
+  }),
+});
