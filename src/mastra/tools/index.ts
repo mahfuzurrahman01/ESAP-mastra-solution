@@ -1,6 +1,5 @@
 import { createTool } from "@mastra/core/tools";
 import { z } from "zod";
-import { employeeSchema } from "../../schema/hrms";
 
 interface GeocodingResponse {
   results: {
@@ -102,48 +101,4 @@ function getWeatherCondition(code: number): string {
   return conditions[code] || "Unknown";
 }
 
-
-
-const employeeTool = createTool({
-  id: "get-all-employees",
-  description: "Get all employees from the system",
-  inputSchema: z.object({
-    pageIndex: z.number().optional().describe("Page number (starts from 1)"),
-    pageSize: z.number().optional().describe("Number of items per page"),
-  }),
-  outputSchema: z.object({
-    pageIndex: z.number(),
-    pageSize: z.number(),
-    count: z.number(),
-    data: z.array(employeeSchema),
-  }),
-  execute: async ({ context }) => {
-    const pageIndex = context.pageIndex || 1;
-    const pageSize = context.pageSize || 10;
-
-    return await getAllEmployees(pageIndex, pageSize);
-  },
-});
-
-const getAllEmployees = async (
-  pageIndex: number = 1,
-  pageSize: number = 10
-) => {
-  const url = `https://esapdev.xyz:7002/api/employee/get-all-employee?pageIndex=${pageIndex}&pageSize=${pageSize}`;
-
-  const response = await fetch(url, {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkYmY3NmI4Zi1iYTgyLTQ4ZDQtYjkyOC1kNzY3MWZkZTExZDciLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoieWFzaXJhcmFmYXQ4ODU2QGdtYWlsLmNvbSIsImp0aSI6ImVjODI1MTI2LTc4M2QtNGM0My1iYmIwLWI0MzBiZWRmN2E3OCIsImVtYWlsIjoieWFzaXJhcmFmYXQ4ODU2QGdtYWlsLmNvbSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6WyJVc2VyIE1hbmFnZW1lbnQgQWRtaW4iLCJTdXBlciBBZG1pbiJdLCJQZXJtaXNzaW9uIjpbIkFsbCIsIkNSTSBBZG1pbiIsIkNSTSBFeGVjdXRpdmUiLCJDUk0gTWFuYWdlciIsIkZNUyBBZG1pbiIsIkZNUyBFeGVjdXRpdmUiLCJGTVMgTWFuYWdlciIsIkhSIEFkbWluIiwiSFIgRXhlY3V0aXZlIiwiSFIgTWFuYWdlciIsIlNDTSBBZG1pbiIsIlNDTSBFeGVjdXRpdmUiLCJTQ00gTWFuYWdlciIsIlVzZXIgTWFuYWdlbWVudCBBZG1pbiIsIlVzZXIgTWFuYWdlbWVudCBFeGVjdXRpdmUiLCJVc2VyIE1hbmFnZW1lbnQgTWFuYWdlciJdLCJleHAiOjE3NDczNDYxNjcsImlzcyI6IkVTQVAiLCJhdWQiOiJFU0FQX0NsaWVudCJ9.RmkPufhZuTD43FN90qJTD-8lQGUcOt4gh5DIVrgFrAg`,
-      "Content-Type": "application/json",
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error(`Failed to fetch employees: ${response.statusText}`);
-  }
-
-  return await response.json();
-};
-
-export { weatherTool, employeeTool };
+export { weatherTool };
