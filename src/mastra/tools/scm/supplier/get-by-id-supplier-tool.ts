@@ -1,6 +1,6 @@
 import { createTool } from "@mastra/core";
 import { z } from "zod";
-import { SupplierSchema } from "../../../../schema/scm";
+import { UpdateSupplierSchema } from "../../../../schema/scm/supplier.schema";
 
 const getSupplierByIdTool = createTool({
   id: "get-supplier-get-by-id",
@@ -8,7 +8,7 @@ const getSupplierByIdTool = createTool({
   inputSchema: z.object({
     supplierId: z.string().describe("The ID of the supplier to fetch"),
   }),
-  outputSchema: SupplierSchema,
+  outputSchema: UpdateSupplierSchema,
   execute: async ({ context }) => {
     const { supplierId } = context;
     return await getSupplierById(supplierId);

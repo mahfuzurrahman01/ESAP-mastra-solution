@@ -1,6 +1,6 @@
 import { createTool } from "@mastra/core";
 import { z } from "zod";
-import { SupplierSchema } from "../../../schema/scm";
+import { CreateSupplierSchema } from "../../../schema/scm/supplier.schema";
 
 const supplierTool = createTool({
     id: "get-all-suppliers",
@@ -13,7 +13,7 @@ const supplierTool = createTool({
         pageIndex: z.number(),
         pageSize: z.number(),
         count: z.number(),
-        data: z.array(SupplierSchema),
+        data: z.array(CreateSupplierSchema),
     }),
     execute: async ({ context }) => {
         const pageIndex = context.pageIndex || 1;
