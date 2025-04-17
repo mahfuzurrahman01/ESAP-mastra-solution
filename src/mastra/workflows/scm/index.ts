@@ -2,7 +2,8 @@ import { google } from "@ai-sdk/google";
 import { Agent } from "@mastra/core/agent";
 import { Step, Workflow } from "@mastra/core/workflows";
 import { z } from "zod";
-import { SupplierSchema } from "../../../schema/scm";
+import { CreateSupplierSchema } from "../../../schema/scm/supplier.schema";
+
 
 const llm = google("gemini-2.0-flash");
 
@@ -58,7 +59,7 @@ const supplierResponseSchema = z.object({
   pageIndex: z.number(),
   pageSize: z.number(),
   count: z.number(),
-  data: z.array(SupplierSchema),
+  data: z.array(CreateSupplierSchema),
 });
 
 const fetchSupplier = new Step({

@@ -2,6 +2,7 @@
 import { createTool } from "@mastra/core";
 import { z } from "zod";
 import { employeeSchema } from "../../../schema/hrms/hrms-schema";
+import { isValidEmail } from "../../../utils/helper";
 
 // ========================== get all employees ==========================
 
