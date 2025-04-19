@@ -101,4 +101,12 @@ function getWeatherCondition(code: number): string {
   return conditions[code] || "Unknown";
 }
 
-export { weatherTool };
+const requiredInputTool = createTool({
+  id: "required-input",
+  description: "Required input tool",
+  inputSchema: z.object({
+    location: z.string().describe("City name"),
+  }),
+});
+
+export { weatherTool, requiredInputTool };

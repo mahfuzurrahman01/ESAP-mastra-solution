@@ -7,7 +7,6 @@ import { postSupplierTool } from "../../tools/scm/supplier/post-supplier-tool";
 import { updateSupplierTool } from "../../tools/scm/supplier/update-supplier-tool";
 import { postCarrierTool } from "../../tools/scm/carrier/post-carrier-tool";
 import { postProductTool } from "../../tools/scm/product/post-product-tool";
-import { employeeTool } from "../../tools/hrms";
 import { getAllProductsTool } from "../../tools/scm/product/get-all-products-tool";
 import { getProductByIdTool } from "../../tools/scm/product/get-by-id-product-tool";
 import { updateProductTool } from "../../tools/scm/product/update-product-tool";
@@ -138,7 +137,6 @@ Maintain this exact formatting for consistency, using the emoji and section head
   tools: {
     supplierTool,
     weatherTool,
-    employeeTool,
     getSupplierByIdTool,
     postSupplierTool,
     updateSupplierTool,

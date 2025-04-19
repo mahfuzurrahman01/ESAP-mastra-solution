@@ -1,13 +1,12 @@
 import { Agent } from "@mastra/core/agent";
 import { google } from "@ai-sdk/google";
-import {
-  employeeTool,
-  getEmployeeTool,
-  addEmployeeTool,
-  updateEmployeeTool,
-  deleteEmployeeTool,
-  deleteEmployeesTool,
-} from "../../tools/hrms";
+import { getEmployeeByIdTool } from "../../tools/hrms/get-employee-by-id";
+import { getEmployeeTool } from "../../tools/hrms/get-all-employe";
+import { addEmployeeTool } from "../../tools/hrms/add-employee";
+import { updateEmployeeTool } from "../../tools/hrms/update-employee";
+import { deleteEmployeeTool } from "../../tools/hrms/delete-employee";
+import { deleteEmployeesTool } from "../../tools/hrms/delete-employees";
+import { Memory } from "@mastra/memory";
 
 export const hrmsAgent = new Agent({
   name: "HRMS Agent",
@@ -98,11 +97,12 @@ export const hrmsAgent = new Agent({
     `,
   model: google("gemini-2.0-flash"),
   tools: {
-    employeeTool,
+    getEmployeeByIdTool,
     getEmployeeTool,
     addEmployeeTool,
     updateEmployeeTool,
     deleteEmployeeTool,
     deleteEmployeesTool,
   },
+  memory: new Memory(),
 });
